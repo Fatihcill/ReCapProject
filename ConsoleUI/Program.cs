@@ -24,7 +24,7 @@ namespace ConsoleUI
             {
                 Console.WriteLine($"{car.CarId}\t{colorManager.GetById(car.ColorId).ColorName}\t\t{brandManager.GetById(car.BrandId).BrandName}\t\t{car.ModelYear}\t\t{car.DailyPrice}\t\t{car.Descriptions}");
             }
-        }
+        } 
 
     }
 }
