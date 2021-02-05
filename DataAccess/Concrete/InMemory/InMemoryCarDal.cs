@@ -7,10 +7,10 @@ using System.Text;
 
 namespace DataAccess.Concrete.InMemory
 {
-    public class InMemoryProductDal : ICarDal
+   /* public class InMemoryCarDal : ICarDal
     {
         List<Car> _cars;
-        public InMemoryProductDal()
+        public InMemoryCarDal()
         {
             _cars = new List<Car>
             {
@@ -52,5 +52,5 @@ namespace DataAccess.Concrete.InMemory
             carToUpdate.ModelYear= car.ModelYear;
 
         }
-    }
+    }*/
 }

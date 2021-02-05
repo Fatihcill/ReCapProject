@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Business.Concrete;
-using DataAccess.Concrete.InMemory;
+using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
 
 namespace ConsoleUI
@@ -10,34 +10,21 @@ namespace ConsoleUI
     {
         static void Main(string[] args)
         {
-            var carManager = new CarManager(new InMemoryProductDal());
-            Write(carManager.GetAll(), "Default");
-            //Add Test
-            carManager.Add(new Car { CarId = 6, BrandId = 1, ColorId = 2, DailyPrice = 50000, Description = "NEW CAR", ModelYear = 2021 });
-            Write(carManager.GetAll(), "Added");
-
-
-            //Delete Test
-            carManager.Delete(new Car { CarId = 6 });
-            Write(carManager.GetAll(), "Deleted");
-
-            //Update Test
-            carManager.Update(new Car { CarId = 5, BrandId = 5, ColorId = 3, DailyPrice = 70000, Description = "UPDATED CAR", ModelYear = 2021 });
-            Write(carManager.GetAll(), "Updated");
-
-            //GetByID Test
-            Write(carManager.GetById(3), "GetByID");
-
-        }
-
-
-        static void Write(List<Car> carList, string Msg)
-        {
-            Console.WriteLine("------------------------------{0}--------------------------------------------------", Msg);
-            foreach (var car in carList)
+            CarManager carManager = new CarManager(new EfCarDal());
+            BrandManager brandManager = new BrandManager(new EfBrandDal());
+            ColorManager colorManager = new ColorManager(new EfColorDal());
+            Console.WriteLine("Brand Id'si 1 olan arabalar: \nId\tColor Name\tBrand Name\tModel Year\tDaily Price\tDescriptions");
+            foreach (var car in carManager.GetCarsByBrandId(1))
             {
-                Console.WriteLine("CarID: {0} MarkaID: {1} ColorId: {2} DailyPrice: {3} Description: {4} ModelYear: {5}", car.CarId, car.BrandId, car.ColorId, car.DailyPrice, car.Description, car.ModelYear);
+                Console.WriteLine($"{car.CarId}\t{colorManager.GetById(car.ColorId).ColorName}\t\t{brandManager.GetById(car.BrandId).BrandName}\t\t{car.ModelYear}\t\t{car.DailyPrice}\t\t{car.Descriptions}");
+            }
+
+            Console.WriteLine("\n\nColor Id'si 2 olan arabalar: \nId\tColor Name\tBrand Name\tModel Year\tDaily Price\tDescriptions");
+            foreach (var car in carManager.GetCarsByColorId(2))
+            {
+                Console.WriteLine($"{car.CarId}\t{colorManager.GetById(car.ColorId).ColorName}\t\t{brandManager.GetById(car.BrandId).BrandName}\t\t{car.ModelYear}\t\t{car.DailyPrice}\t\t{car.Descriptions}");
             }
         }
+
     }
 }
