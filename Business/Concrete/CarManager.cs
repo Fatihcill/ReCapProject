@@ -4,6 +4,7 @@ using Entities.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Entities.DTOs;
 
 namespace Business.Concrete
 {
@@ -20,11 +21,11 @@ namespace Business.Concrete
             if (car.DailyPrice > 0)
             {
                 _carDal.Add(car);
-                Console.WriteLine("Araba eklendi.");
+                Console.WriteLine("Car Added.");
             }
             else
             {
-                Console.WriteLine("fiyat 0'dan büyük olmalıdır");
+                Console.WriteLine("price must be greater than 0");
             }
         }
     
@@ -32,11 +33,6 @@ namespace Business.Concrete
         public void Delete(Car car)
         {
             _carDal.Delete(car);
-        }
-
-        public List<Car> GetById(int Id)
-        {
-            throw new NotImplementedException();
         }
 
         public List<Car> GetCarsByColorId(int id)
@@ -49,13 +45,18 @@ namespace Business.Concrete
             return _carDal.GetAll(c => c.BrandId == id);
         }
 
+        public List<CarDetailDto> getCarDetail()
+        {
+            return _carDal.GetCarDetails();
+        }
+
 
         public List<Car> GetAll()
         {
             return _carDal.GetAll();
         }
 
-        Car ICarService.GetById(int id)
+        public Car GetById(int id)
         {
             return _carDal.Get(c => c.CarId == id);
         }
@@ -66,11 +67,11 @@ namespace Business.Concrete
             if (car.DailyPrice > 0)
             {
                 _carDal.Update(car);
-                Console.WriteLine("Araba Güncellendi.");
+                Console.WriteLine("Car Updated.");
             }
             else
             {
-                Console.WriteLine("fiyat 0'dan büyük olmalıdır");
+                Console.WriteLine("price must be greater than 0");
             }
         }
     }
