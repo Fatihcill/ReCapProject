@@ -13,13 +13,16 @@ namespace ConsoleUI
             CarManager carManager = new CarManager(new EfCarDal());
             BrandManager brandManager = new BrandManager(new EfBrandDal());
             ColorManager colorManager = new ColorManager(new EfColorDal());
+            RentalManager rentalManager = new RentalManager(new EfRentalDal());
+            CustomerManager customerManager = new CustomerManager(new EfCustomerDal());
+            UserManager userManager = new UserManager(new EfUserDal());
             //Day8Test(carManager, colorManager, brandManager);
             //Day9Test(carManager);
 
-            var result = carManager.getCarDetail();
+            var result = carManager.getCarDetails();
             if (result.Success)
             {
-                Console.WriteLine("Add Test:  \nCar Name\tBrand Name\tColor Name\tDaily Price");
+                Console.WriteLine("Test:  \nCar Name\tBrand Name\tColor Name\tDaily Price");
                 foreach (var car in result.Data)
                 {
                     Console.WriteLine(
@@ -32,8 +35,27 @@ namespace ConsoleUI
             }
             Console.WriteLine("\n");
 
-            Console.ReadLine();
+            Rental rent = new Rental
+            {
+                CarId = 1020,
+                CustomerId = 1,
+                RentDate = "2011",
+            };
+            var rentalResult = rentalManager.Add(rent);
 
+
+            //Car newCar = new Car
+            //{
+            //    BrandId = 3,
+            //    ColorId = 1,
+            //    ModelYear = "2005",
+            //    DailyPrice = 5000,
+            //    Descriptions = "New Car"
+            //};
+            //var rentalResult = carManager.Add(newCar);
+            Console.WriteLine(rentalResult.Message);
+
+            Console.ReadLine();
         }
 
         //private static void Day9Test(CarManager carManager)

@@ -4,7 +4,7 @@ using Entities.Concrete;
 
 namespace Business.Abstract
 {
-    public interface IColorService:IService<Color>
+    public interface ICustomerService:IService<Customer>
     {
     }
 }

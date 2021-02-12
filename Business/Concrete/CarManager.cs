@@ -48,7 +48,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.BrandId == id));
         }
 
-        public IDataResult<List<CarDetailDto>> getCarDetail()
+        public IDataResult<List<CarDetailDto>> getCarDetails()
         {
             return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(), Messages.CarsListed);
         }
@@ -70,10 +70,8 @@ namespace Business.Concrete
             if (car.DailyPrice > 0)
             {
                 _carDal.Update(car);
-
                 return new SuccessResult(Messages.CarUpdated);
             }
-
             return new ErrorResult(Messages.CarPriceInvalid);
         }
     }
