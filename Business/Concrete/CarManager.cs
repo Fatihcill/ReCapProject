@@ -5,8 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Results;
 using Entities.DTOs;
+using FluentValidation;
 
 namespace Business.Concrete
 {
@@ -20,17 +23,11 @@ namespace Business.Concrete
 
         public IResult Add(Car car)
         {
-            if (car.DailyPrice > 0)
-            {
-                _carDal.Add(car);
-                
-                return new SuccessResult(Messages.CarAdded);
-            }
-
-                return new ErrorResult(Messages.CarPriceInvalid);
-            
+            ValidationTool.Validate(new CarValidator(), car);
+            _carDal.Add(car);
+            return new SuccessResult(Messages.CarAdded);
         }
-    
+
 
         public IResult Delete(Car car)
         {
@@ -56,7 +53,7 @@ namespace Business.Concrete
 
         public IDataResult<List<Car>> GetAll()
         {
-            return new SuccessDataResult<List<Car>>(_carDal.GetAll(),Messages.CarsListed);
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(), Messages.CarsListed);
         }
 
         public IDataResult<Car> GetById(int id)
@@ -67,12 +64,10 @@ namespace Business.Concrete
 
         public IResult Update(Car car)
         {
-            if (car.DailyPrice > 0)
-            {
-                _carDal.Update(car);
+            ValidationTool.Validate(new CarValidator(), car);
+            _carDal.Update(car);
                 return new SuccessResult(Messages.CarUpdated);
-            }
-            return new ErrorResult(Messages.CarPriceInvalid);
+
         }
     }
 }
