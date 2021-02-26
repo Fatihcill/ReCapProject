@@ -37,5 +37,9 @@
 
         public static string NumberOfImagesError ="number of pictures exceeded";
 
+        public static string CarImageAdded = "CarImage Added";
+        public static string CarImageDeleted = "CarImage Deleted";
+        public static string CarImageUpdated = "CarImage Updated";
+        public static string CarImagesListed = "CarImages Listed";
     }
 }

@@ -1,29 +1,24 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Business.Abstract;
+using Entities.Concrete;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Business.Abstract;
-using Entities.Concrete;
-using Microsoft.AspNetCore.Hosting;
-using WebAPI.Models;
 
 namespace WebAPI.Controllers
 {
     [Route("api/carimages")]
     [ApiController]
-    public class CarImagesControllers : ControllerBase
+    public class CarImagesController : ControllerBase
     {
-
         ICarImageService _carImageService;
-        public static IWebHostEnvironment _webHostEnvironment;
 
-        public CarImagesControllers(IWebHostEnvironment webHostEnvironment,ICarImageService carImageService)
+        public CarImagesController(ICarImageService carImageService)
         {
             _carImageService = carImageService;
-            _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpGet("getall")]
@@ -34,82 +29,86 @@ namespace WebAPI.Controllers
             {
                 return Ok(result);
             }
-
             return BadRequest(result);
         }
+
         [HttpGet("getbyid")]
         public IActionResult GetById(int id)
         {
-            var result = _carImageService.GetById(id);
+            var result = _carImageService.GetImagesByCarId(id);
             if (result.Success)
             {
                 return Ok(result);
             }
+            return BadRequest(result);
+        }
 
+        [HttpGet("getbycarid")]
+        public IActionResult GetByImageByCarId(int id)
+        {
+            var result = _carImageService.GetImagesByCarId(id);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
             return BadRequest(result);
         }
 
         [HttpPost("add")]
-        public async Task<string> Add([FromForm]FileUpload objectFile)
+        public IActionResult Add([FromForm] int carId, [FromForm] IFormFile file)
         {
-            System.IO.FileInfo ff = new System.IO.FileInfo(objectFile.files.FileName);
-            string fileExtension = ff.Extension;
-
-            var result = Guid.NewGuid().ToString("N")
-                         + "_" + DateTime.Now.Month + "_"
-                         + DateTime.Now.Day + "_"
-                         + DateTime.Now.Year + fileExtension;
-            try
+            if (Path.GetExtension(file.FileName) != ".png" && Path.GetExtension(file.FileName) != ".jpg" && Path.GetExtension(file.FileName) != ".jpeg")
             {
-                if (objectFile.files.Length > 0)
-                {
-                    
-                    string path = _webHostEnvironment.WebRootPath + "\\Upload\\";
-                    if (!Directory.Exists(path))
-                    {
-                        Directory.CreateDirectory(path);
-                    }
-                    using (FileStream fileStream = System.IO.File.Create(path + result ))
-                    {
-
-                        objectFile.files.CopyTo(fileStream);
-                        fileStream.Flush();
-                        return "\\Upload\\" + objectFile.files.FileName;
-                         
-                    }
-                }
-                else
-                {
-                    return "Yükleme başarısız!";
-                }
+                return BadRequest("Sadece Resim Dosyası Yükleyebilirsiniz...");
             }
-            catch (Exception exception)
+            CarImage carImage = new CarImage();
+            carImage.CarId = carId;
+            carImage.ImagePath = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            carImage.Date = DateTime.Now;
+            var result = _carImageService.Add(carImage);
+            if (result.Success)
             {
-
-                return exception.Message; 
+                FileStream fileStream = System.IO.File.Create(Path.Combine(@"CarImages\" + carImage.ImagePath));
+                file.CopyTo(fileStream);
+                return Ok(result);
             }
+            return BadRequest(result);
         }
+
         [HttpPost("update")]
-        public IActionResult Update(CarImage carImage)
+        public IActionResult Delete(int id)
         {
-            var result = _carImageService.Update(carImage);
+            var data = _carImageService.GetById(id);
+            var result = _carImageService.Delete(data.Data);
             if (result.Success)
             {
+                System.IO.File.Delete(Path.Combine(@"CarImages\" + data.Data.ImagePath));
                 return Ok(result);
             }
-
             return BadRequest(result);
         }
-        [HttpPost("delete")]
-        public IActionResult Delete(CarImage carImage)
+
+        [HttpPost("update")]
+        public IActionResult Update([FromForm] int id, [FromForm] int carId, [FromForm] IFormFile file)
         {
-            var result = _carImageService.Delete(carImage);
+            if (Path.GetExtension(file.FileName) != ".png" && Path.GetExtension(file.FileName) != ".jpg" && Path.GetExtension(file.FileName) != ".jpeg")
+            {
+                return BadRequest("Sadece Resim Dosyası Yükleyebilirsiniz...");
+            }
+            var data = _carImageService.GetById(id);
+            data.Data.CarId = carId;
+            System.IO.File.Delete(Path.Combine(@"CarImages\"+data.Data.ImagePath));
+            data.Data.ImagePath = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            data.Data.Date = DateTime.Now;
+            var result = _carImageService.Update(data.Data);
             if (result.Success)
             {
+                FileStream fileStream = System.IO.File.Create(Path.Combine(@"CarImages\" + data.Data.ImagePath));
+                file.CopyTo(fileStream);
                 return Ok(result);
             }
-
             return BadRequest(result);
         }
+
     }
 }
