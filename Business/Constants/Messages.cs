@@ -34,5 +34,8 @@
         public static string RentalUpdated = "Rental Updated";
         public static string RentalsListed = "Rentals Listed";
         public static string RentalDeliverInvalid = "To Rent a car, it must first be delivered";
+
+        public static string NumberOfImagesError ="number of pictures exceeded";
+
     }
 }
