@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.12" />
   </ItemGroup>
 
   <ItemGroup>
@@ -13,7 +14,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CarImages\" />
+    <Folder Include="wwwroot\Images\CarImages\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Images\CarImages\258b5276-2b2a-4fd5-898f-9df7d07f2dd5.jpg" />
+    <None Include="wwwroot\Images\CarImages\310f2130-843a-4734-8f3e-8b1add121522.jpg" />
+    <None Include="wwwroot\Images\CarImages\49ff4d83-4fa0-4ed9-a37c-409567bc854d.jpg" />
+    <None Include="wwwroot\Images\CarImages\56a29ece-343e-4075-b37b-25526b4b9854.jpg" />
+    <None Include="wwwroot\Images\CarImages\ac3f2336-667c-42fe-9d18-a36f9644748d.jpg" />
+    <None Include="wwwroot\Images\CarImages\default.png" />
   </ItemGroup>
 
 

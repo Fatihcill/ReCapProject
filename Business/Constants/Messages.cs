@@ -40,6 +40,16 @@
         public static string CarImageAdded = "CarImage Added";
         public static string CarImageDeleted = "CarImage Deleted";
         public static string CarImageUpdated = "CarImage Updated";
-        public static string CarImagesListed = "CarImages Listed";
+        public static string CarImageLimitExceeded ="CarImage Limit Exceeded";
+
+
+
+
+        public static string UserRegistered = "UserRegistered";
+        public static string UserNotFound = "UserNotFound";
+        public static string PasswordError = "PasswordError";
+        public static string SuccessfulLogin = "SuccessfulLogin";
+        public static string UserAlreadyExists = "UserAlreadyExists";
+        public static string AccessTokenCreated = "AccessTokenCreated";
     }
 }
