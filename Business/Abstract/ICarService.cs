@@ -7,11 +7,14 @@ using Entities.DTOs;
 
 namespace Business.Abstract
 {
-    public interface ICarService:IService<Car>
+    public interface ICarService : IService<Car>
     {
 
         IDataResult<List<Car>> GetCarsByColorId(int id);
         IDataResult<List<Car>> GetCarsByBrandId(int id);
         IDataResult<List<CarDetailDto>> getCarDetails();
+
+        IResult AddTransactionalTest(Car car);
+        //RESTFUL ---> HTTP --->
     }
 }
