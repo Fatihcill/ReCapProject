@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Core.Aspects.Autofac.Caching;
 using Core.Utilities.FileHelper;
 
 namespace Business.Concrete
@@ -22,7 +23,9 @@ namespace Business.Concrete
         {
             _carImageDAL = carImageDAL;
         }
+
         [ValidationAspect(typeof(CarImageValidator))]
+        [CacheRemoveAspect("ICarImageService.Get")]
         public IResult Add(IFormFile file, CarImage carImage)
         {
             IResult result = BusinessRules.Run(CheckImageLimitExceeded(carImage.CarId));
@@ -35,14 +38,18 @@ namespace Business.Concrete
             _carImageDAL.Add(carImage);
             return new SuccessResult(Messages.CarImageAdded);
         }
+        
         [ValidationAspect(typeof(CarImageValidator))]
+        [CacheRemoveAspect("ICarImageService.Get")]
         public IResult Delete(CarImage carImage)
         {
             FileHelper.Delete(carImage.ImagePath);
             _carImageDAL.Delete(carImage);
             return new SuccessResult(Messages.CarImageDeleted);
         }
+
         [ValidationAspect(typeof(CarImageValidator))]
+        [CacheRemoveAspect("ICarImageService.Get")]
         public IResult Update(IFormFile file, CarImage carImage)
         {
             carImage.ImagePath = FileHelper.Update(_carImageDAL.Get(p => p.CarImageId == carImage.CarImageId).ImagePath, file);
@@ -50,15 +57,19 @@ namespace Business.Concrete
             _carImageDAL.Update(carImage);
             return new SuccessResult(Messages.CarImageUpdated);
         }
+
         [ValidationAspect(typeof(CarImageValidator))]
         public IDataResult<CarImage> Get(int id)
         {
             return new SuccessDataResult<CarImage>(_carImageDAL.Get(p => p.CarImageId == id));
         }
+
         public IDataResult<List<CarImage>> GetAll()
         {
             return new SuccessDataResult<List<CarImage>>(_carImageDAL.GetAll());
         }
+
+        [CacheAspect(duration: 10)]
         [ValidationAspect(typeof(CarImageValidator))]
         public IDataResult<List<CarImage>> GetImagesByCarId(int id)
         {
