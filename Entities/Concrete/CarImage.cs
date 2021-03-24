@@ -7,7 +7,9 @@ namespace Entities.Concrete
     {
         public int CarImageId { get; set; }
         public int CarId { get; set; }
-        public string ImagePath { get; set; }
-        public DateTime  Date { get; set; }
+        public string ImagePath { get; set; } = Environment.CurrentDirectory + @"\wwwroot\Images\default.png";
+        public DateTime  Date { get; set; }= DateTime.Now;
+        public string WebImagePath { get; set; }= "/Images/default.png";
+        
     }
 }

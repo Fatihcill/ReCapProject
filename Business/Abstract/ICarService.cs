@@ -1,6 +1,7 @@
 ﻿using Entities.Concrete;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 using Core.Utilities.Results;
 using Entities.DTOs;
@@ -10,18 +11,12 @@ namespace Business.Abstract
     public interface ICarService : IService<Car>
     {
 
-        IDataResult<List<Car>> GetCarsByColorId(int id);
-        IDataResult<List<Car>> GetCarsByBrandId(int id);
-        IDataResult<List<Car>> GetCarsByDailyPrice(decimal min, decimal max);
 
+        IDataResult<List<CarDetailDto>> GetCarDetails(Expression<Func<Car, bool>> filter = null);
+        IDataResult<List<CarDetailDto>> GetCarDetailsById(int carId);
+        IDataResult<List<CarDetailDto>> GetCarsDetailByBrandId(int brandId);
+        IDataResult<List<CarDetailDto>> GetCarsDetailByColorId(int colorId);
+        IDataResult<List<CarDetailDto>> GetCarDetailsByBrandAndColor(int brandId, int colorId);
 
-        IDataResult<List<CarDetailDto>> GetCarDetailsByBrandId(int brandId);
-        IDataResult<List<CarDetailDto>> GetCarDetailsByColorId(int colorId);
-        IDataResult<List<CarDetailDto>> GetCarDetailsByModelYear(short min, short max);
-        IDataResult<List<CarDetailDto>> GetCarDetail(int carId);
-        IDataResult<List<CarDetailDto>> GetCarDetails();
-
-        IResult AddTransactionalTest(Car car);
-        //RESTFUL ---> HTTP --->
     }
 }

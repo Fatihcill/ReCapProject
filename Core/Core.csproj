@@ -8,6 +8,7 @@
     <Folder Include="CrossCuttingConcerns\Caching\Redis\" />
     <Folder Include="CrossCuttingConcerns\Validation\" />
     <Folder Include="DataAccess\EntityFramework\" />
+    <Folder Include="Entities\Concrete\Fake\" />
   </ItemGroup>
 
   <ItemGroup>

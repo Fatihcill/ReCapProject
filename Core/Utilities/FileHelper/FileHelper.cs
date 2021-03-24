@@ -7,57 +7,37 @@ namespace Core.Utilities.FileHelper
 {
     public class FileHelper
     {
-        public static string Add(IFormFile file)
+        private static string _wwwRoot = Environment.CurrentDirectory + @"\wwwroot";
+        
+        public static Tuple<string, string> SaveImageFile(string fileName,IFormFile extension)
         {
-            var sourcepath = Path.GetTempFileName();
-            if (file.Length > 0)
-            {
-                using (var stream = new FileStream(sourcepath, FileMode.Create))
-                {
-                    file.CopyTo(stream);
-                }
-            }
-            var result = newPath(file);
-            File.Move(sourcepath, result);
-            return result;
-        }
-        public static IResult Delete(string path)
-        {
-            try
-            {
-                File.Delete(path);
-            }
-            catch (Exception exception)
-            {
-                return new ErrorResult(exception.Message);
-            }
+            string imageExtension = Path.GetExtension(extension.FileName); 
+            string newImageName = string.Format("{0:D}{1}", Guid.NewGuid(), imageExtension);
+            string imageDirectory = Path.Combine(_wwwRoot, fileName);
+            string FullImagePath = Path.Combine(imageDirectory, newImageName); 
+            string webImagePath= string.Format("/"+ fileName + "/{0}", newImageName);
+            if(!Directory.Exists(imageDirectory))
+                Directory.CreateDirectory(imageDirectory);
 
-            return new SuccessResult();
-        }
-        public static string Update(string sourcePath, IFormFile file)
-        {
-            var result = newPath(file);
-            if (sourcePath.Length > 0)
+            using (var fileStream = File.Create(FullImagePath))
             {
-                using (var stream = new FileStream(result, FileMode.Create))
-                {
-                    file.CopyTo(stream);
-                }
+                extension.CopyTo(fileStream);
+                fileStream.Flush();
             }
-            File.Delete(sourcePath);
-            return result;
+            return Tuple.Create(FullImagePath,webImagePath);
         }
-        public static string newPath(IFormFile file)
+
+        public static bool DeleteImageFile(string fileName)
         {
-            FileInfo ff = new FileInfo(file.FileName);
-            string fileExtension = ff.Extension;
-
-            string path = Environment.CurrentDirectory + @"\wwwroot\Images\CarImages";
-            var newPath = Guid.NewGuid().ToString() + "_" + DateTime.Now.Month + "_" + DateTime.Now.Day + "_" + DateTime.Now.Year + fileExtension;
-
-            string result = $@"{path}\{newPath}";
-            return result;
+            string fullPath = Path.Combine(fileName);
+            if (File.Exists(_wwwRoot + fullPath))
+            {
+                File.Delete(_wwwRoot + fullPath);
+                return true;
+            }
+            return false;
         }
+    
 
     }
 }

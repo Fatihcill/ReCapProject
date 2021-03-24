@@ -8,6 +8,8 @@ namespace Business.Abstract
 {
     public interface IRentalService:IService<Rental>
     {
+        IDataResult<List<RentalDetailDto>> GetRentalDetailsById(int id);
         IDataResult<List<RentalDetailDto>> GetRentalDetails();
+
     }
 }
