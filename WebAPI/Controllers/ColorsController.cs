@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Business.Abstract;
+using Core.Utilities.Results;
 using Entities.Concrete;
 
 namespace WebAPI.Controllers
@@ -13,68 +14,62 @@ namespace WebAPI.Controllers
     [ApiController]
     public class ColorsController : ControllerBase
     {
-        IColorService _colorService;
+        private IColorService _colorService;
 
         public ColorsController(IColorService colorService)
         {
             _colorService = colorService;
         }
+
         [HttpGet("getall")]
         public IActionResult GetAll()
         {
             var result = _colorService.GetAll();
             if (result.Success)
-            {
-                return Ok(result);
-            }
+                {
+                    return (IActionResult)Ok(result);
+                }
 
-            return BadRequest(result);
-        }
-        [HttpGet("getbyid")]
-        public IActionResult GetById(int id)
-        {
-            var result = _colorService.GetById(id);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
+                else { return BadRequest(result); }
 
-            return BadRequest(result);
         }
 
-
-        [HttpPost("add")]
-        public IActionResult Add(Color color)
+        [HttpPost("addcolor")]
+        public IActionResult AddColor(Color color)
         {
             var result = _colorService.Add(color);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest(result);
+            return result.Success ? (IActionResult)Ok(result) : BadRequest(result);
         }
-        [HttpPost("update")]
-        public IActionResult Update(Color color)
+        [HttpPut("updatecolor")]
+        public IActionResult UpdateColor(Color color)
         {
             var result = _colorService.Update(color);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest(result);
+            if (result.Success) {return Ok(result); }
+                
+            else {return BadRequest(result); }
+                
         }
-        [HttpPost("delete")]
-        public IActionResult Delete(Color color)
+
+        [HttpPost("deletecolor")]
+        public IActionResult DeleteColor(Color color)
         {
             var result = _colorService.Delete(color);
+            return result.Success ? (IActionResult)Ok(result) : BadRequest(result);
+        }
+
+        [HttpGet("getcolorbyid")]
+        public IActionResult getColorById(int colorId)
+        {
+            var result = _colorService.GetById(colorId);
             if (result.Success)
             {
                 return Ok(result);
             }
-
-            return BadRequest(result);
+            else
+            {
+                return BadRequest(result);
+            }
         }
+
     }
 }

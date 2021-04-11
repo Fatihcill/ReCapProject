@@ -17,22 +17,24 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<CarManager>().As<ICarService>().SingleInstance();
             builder.RegisterType<EfCarDal>().As<ICarDal>().SingleInstance();
 
-            builder.RegisterType<CarImageManager>().As<ICarImageService>();
-            builder.RegisterType<EfCarImageDal>().As<ICarImageDal>();
+            builder.RegisterType<BrandManager>().As<IBrandService>().SingleInstance();
+            builder.RegisterType<EfBrandDal>().As<IBrandDal>().SingleInstance();
 
-            builder.RegisterType<BrandManager>().As<IBrandService>().SingleInstance(); 
-            builder.RegisterType<EfBrandDal>().As<IBrandDal>().SingleInstance(); 
+            builder.RegisterType<ColorManager>().As<IColorService>().SingleInstance();
+            builder.RegisterType<EfColorDal>().As<IColorDal>().SingleInstance();
 
-            builder.RegisterType<ColorManager>().As<IColorService>().SingleInstance(); 
-            builder.RegisterType<EfColorDal>().As<IColorDal>().SingleInstance(); 
-            
-            builder.RegisterType<CustomerManager>().As<ICustomerService>().SingleInstance(); 
-            builder.RegisterType<EfCustomerDal>().As<ICustomerDal>().SingleInstance(); 
+            builder.RegisterType<CustomerManager>().As<ICustomerService>().SingleInstance();
+            builder.RegisterType<EfCustomerDal>().As<ICustomerDal>().SingleInstance();
 
-            builder.RegisterType<RentalManager>().As<IRentalService>().SingleInstance(); 
+            builder.RegisterType<RentalManager>().As<IRentalService>().SingleInstance();
             builder.RegisterType<EfRentalDal>().As<IRentalDal>().SingleInstance();
 
-            builder.RegisterType<PaymentManager>().As<IPaymentService>();
+            builder.RegisterType<CarImageManager>().As<ICarImageService>().SingleInstance();
+            builder.RegisterType<EfCarImageDal>().As<ICarImageDal>().SingleInstance();
+
+            builder.RegisterType<CardManager>().As<ICardService>().SingleInstance();
+            builder.RegisterType<EfCardDal>().As<ICardDal>().SingleInstance();
+
 
 
 

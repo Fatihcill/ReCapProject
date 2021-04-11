@@ -13,69 +13,57 @@ namespace WebAPI.Controllers
     [ApiController]
     public class BrandsController : ControllerBase
     {
-        IBrandService _brandService;
+        private IBrandService _brandService;
 
         public BrandsController(IBrandService brandService)
         {
             _brandService = brandService;
         }
+
         [HttpGet("getall")]
         public IActionResult GetAll()
         {
             var result = _brandService.GetAll();
             if (result.Success)
             {
-                return Ok(result);
+                return (IActionResult)Ok(result);
             }
-
-            return BadRequest(result);
-        }
-        [HttpGet("getbyid")]
-        public IActionResult GetById(int id)
-        {
-            var result = _brandService.GetById(id);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-
             return BadRequest(result);
         }
 
-
-        [HttpPost("add")]
-        public IActionResult Add(Brand brand)
+        [HttpPost("addbrand")]
+        public IActionResult AddBrand(Brand brand)
         {
             var result = _brandService.Add(brand);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest(result);
+            return result.Success ? (IActionResult)Ok(result) : BadRequest(result);
         }
-        [HttpPost("update")]
-        public IActionResult Update(Brand brand)
+        [HttpPut("updatebrand")]
+        public IActionResult UpdateBrand(Brand brand)
         {
             var result = _brandService.Update(brand);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest(result);
+            return result.Success ? (IActionResult)Ok(result) : BadRequest(result);
         }
-        [HttpPost("delete")]
-        public IActionResult Delete(Brand brand)
+
+        [HttpPost("deletebrand")]
+        public IActionResult DeleteBrand(Brand brand)
         {
             var result = _brandService.Delete(brand);
+            return result.Success ? (IActionResult)Ok(result) : BadRequest(result);
+        }
+
+        [HttpGet("getbrandbyid")]
+        public IActionResult GetBrandById(int brandId)
+        {
+            var result = _brandService.GetById(brandId);
             if (result.Success)
             {
                 return Ok(result);
             }
+            else
+            {
+                return BadRequest(result);
+            }
 
-            return BadRequest(result);
         }
-    
-}
+    }
 }

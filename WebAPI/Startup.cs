@@ -42,6 +42,7 @@ public class Startup
             //AOP
             //Postsharp
             services.AddControllers();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddCors();
 
 

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using Business.Abstract;
 using Business.Constants;
 using Core.Utilities.Results;
@@ -8,25 +10,13 @@ using Entities.DTOs;
 
 namespace Business.Concrete
 {
-    public class CustomerManager:ICustomerService
+    public class CustomerManager : ICustomerService
     {
-        ICustomerDal _customerDal;
+        private ICustomerDal _customerDal;
+
         public CustomerManager(ICustomerDal customerDal)
         {
             _customerDal = customerDal;
-        }
-
-        public IResult Add(Customer customer)
-        {
-            _customerDal.Add(customer);
-            return new SuccessResult(Messages.CustomerAdded);
-        }
-
-        public IResult Delete(Customer customer)
-        {
-            _customerDal.Delete(customer);
-
-            return new SuccessResult(Messages.CustomerDeleted);
         }
 
         public IDataResult<List<Customer>> GetAll()
@@ -34,20 +24,44 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Customer>>(_customerDal.GetAll(), Messages.CustomersListed);
         }
 
-        public IDataResult<Customer> GetById(int id)
+        public IResult Add(Customer customer)
         {
-            return new SuccessDataResult<Customer>(_customerDal.Get(c => c.UserId == id));
-        }
+            _customerDal.Add(customer);
 
-        public IDataResult<List<CustomerDetailDto>> GetCustomerDetails()
-        {
-            return new SuccessDataResult<List<CustomerDetailDto>>(_customerDal.GetCustomerDetails());
+            return new SuccessResult(Messages.CustomerAdded);
         }
 
         public IResult Update(Customer customer)
         {
             _customerDal.Update(customer);
             return new SuccessResult(Messages.CustomerUpdated);
+        }
+
+        public IResult Delete(Customer customer)
+        {
+            _customerDal.Delete(customer);
+            return new SuccessResult(Messages.CustomerDeleted);
+        }
+
+        public IDataResult<List<CustomerDetailDto>> GetCustomerDetails()
+        {
+            return new SuccessDataResult<List<CustomerDetailDto>>(_customerDal.getCustomerDetails(), Messages.CustomersListed);
+           
+        }
+
+        public IDataResult<CustomerDetailDto> GetCustomerDetailById(int customerId)
+        {
+            return new SuccessDataResult<CustomerDetailDto>(_customerDal.getCustomerDetailById(p => p.CustomerId == customerId));
+        }
+
+        public IDataResult<CustomerDetailDto> GetCustomerByEmail(string email)
+        {
+            return new SuccessDataResult<CustomerDetailDto>(_customerDal.getCustomerByEmail(p => p.Email == email));
+        }
+
+        public IDataResult<Customer> GetById(int customerId)
+        {
+            return new SuccessDataResult<Customer>(_customerDal.Get(p => p.CustomerId == customerId));
         }
     }
 }

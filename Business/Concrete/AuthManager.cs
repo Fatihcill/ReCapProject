@@ -1,9 +1,13 @@
-﻿using Business.Abstract;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Business.Abstract;
 using Business.Constants;
 using Core.Entities.Concrete;
 using Core.Utilities.Results;
 using Core.Utilities.Security.Hashing;
 using Core.Utilities.Security.JWT;
+using Entities.Concrete;
 using Entities.DTOs;
 
 namespace Business.Concrete
@@ -12,11 +16,12 @@ namespace Business.Concrete
     {
         private IUserService _userService;
         private ITokenHelper _tokenHelper;
-
-        public AuthManager(IUserService userService, ITokenHelper tokenHelper)
+        private ICustomerService _iCustomerService;
+        public AuthManager(IUserService userService, ITokenHelper tokenHelper,ICustomerService _customerService)
         {
             _userService = userService;
             _tokenHelper = tokenHelper;
+            _iCustomerService = _customerService;
         }
 
         public IDataResult<User> Register(UserForRegisterDto userForRegisterDto, string password)
@@ -35,7 +40,7 @@ namespace Business.Concrete
             _userService.Add(user);
             return new SuccessDataResult<User>(user, Messages.UserRegistered);
         }
-
+        
         public IDataResult<User> Login(UserForLoginDto userForLoginDto)
         {
             var userToCheck = _userService.GetByMail(userForLoginDto.Email);
@@ -50,6 +55,37 @@ namespace Business.Concrete
             }
 
             return new SuccessDataResult<User>(userToCheck, Messages.SuccessfulLogin);
+        }
+        
+        
+        
+        
+
+        public IDataResult<UserForUpdateDto> Update(UserForUpdateDto userForUpdate)
+        {
+            var currentCustomer = _userService.GetById(userForUpdate.UserId);
+
+            var user = new User
+            {
+                UserId = userForUpdate.UserId,
+                Email = userForUpdate.Email,
+                FirstName = userForUpdate.FirstName,
+                LastName = userForUpdate.LastName,
+                
+            };
+        
+            _userService.Update(user);
+
+            var customer = new Customer
+            {
+                CustomerId = userForUpdate.Id,
+                UserId = userForUpdate.UserId,
+                CompanyName = userForUpdate.CompanyName
+            };
+
+            _iCustomerService.Update(customer);
+
+            return new SuccessDataResult<UserForUpdateDto>(userForUpdate, Messages.UserUpdated);
         }
 
         public IResult UserExists(string email)
@@ -66,6 +102,25 @@ namespace Business.Concrete
             var claims = _userService.GetClaims(user);
             var accessToken = _tokenHelper.CreateToken(user, claims);
             return new SuccessDataResult<AccessToken>(accessToken, Messages.AccessTokenCreated);
+        }
+
+        public IResult ChangePassword(ChangePasswordDto changePasswordDto)
+        {
+            byte[] passwordHash, passwordSalt;
+            var userToCheck = _userService.GetById(changePasswordDto.UserId).Data;
+            if (userToCheck == null)
+            {
+                return new ErrorResult(Messages.UserNotFound);
+            }
+            if (!HashingHelper.VerifyPasswordHash(changePasswordDto.OldPassword, userToCheck.PasswordHash, userToCheck.PasswordSalt))
+            {
+                return new ErrorResult(Messages.PasswordError);
+            }
+            HashingHelper.CreatePasswordHash(changePasswordDto.NewPassword, out passwordHash, out passwordSalt);
+            userToCheck.PasswordHash = passwordHash;
+            userToCheck.PasswordSalt = passwordSalt;
+            _userService.Update(userToCheck);
+            return new SuccessResult("Parola Değişti.");
         }
     }
 }

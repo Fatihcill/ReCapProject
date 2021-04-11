@@ -8,36 +8,116 @@ namespace Core.Utilities.FileHelper
     public class FileHelper
     {
         private static string _wwwRoot = Environment.CurrentDirectory + @"\wwwroot";
-        
-        public static Tuple<string, string> SaveImageFile(string fileName,IFormFile extension)
-        {
-            string imageExtension = Path.GetExtension(extension.FileName); 
-            string newImageName = string.Format("{0:D}{1}", Guid.NewGuid(), imageExtension);
-            string imageDirectory = Path.Combine(_wwwRoot, fileName);
-            string FullImagePath = Path.Combine(imageDirectory, newImageName); 
-            string webImagePath= string.Format("/"+ fileName + "/{0}", newImageName);
-            if(!Directory.Exists(imageDirectory))
-                Directory.CreateDirectory(imageDirectory);
+        public static string _wwwRootDefault = Environment.CurrentDirectory + @"\wwwroot\Images\default.png";
 
-            using (var fileStream = File.Create(FullImagePath))
-            {
-                extension.CopyTo(fileStream);
-                fileStream.Flush();
-            }
-            return Tuple.Create(FullImagePath,webImagePath);
+             public static string CreatePath(IFormFile file)
+        {
+
+            FileInfo fileInfo = new FileInfo(file.FileName);
+
+            string path = Path.Combine(_wwwRoot);
+            string fileExtension = fileInfo.Extension;
+            string uniqueFilename = Guid.NewGuid().ToString() + fileExtension;
+            string result = $@"{path}\{uniqueFilename}";
+
+            return result;
+
         }
 
-        public static bool DeleteImageFile(string fileName)
+
+        public static string AddFile(IFormFile file)
         {
-            string fullPath = Path.Combine(fileName);
-            if (File.Exists(_wwwRoot + fullPath))
+
+            string result;
+
+            try
             {
-                File.Delete(_wwwRoot + fullPath);
-                return true;
+                if (file == null)
+                {
+                    result = _wwwRootDefault;
+
+                    return result;
+                }
+                else
+                {
+                    result = CreatePath(file);
+
+                    var sourcePath = Path.GetTempFileName();
+
+                    using (var stream = new FileStream(sourcePath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+
+                    File.Move(sourcePath, result);
+
+                    return result;
+                }
             }
-            return false;
+            catch (Exception exception)
+            {
+                return exception.Message;
+            }
+
         }
-    
+
+
+        public static string DeleteFile(string imagePath)
+        {
+
+            try
+            {
+                File.Delete(imagePath);
+
+                return "Deleted";
+            }
+            catch (Exception exception)
+            {
+                return exception.Message;
+            }
+
+        }
+
+
+        public static string UpdateFile(IFormFile file, string oldImagePath)
+        {
+
+            string result;
+
+            try
+            {
+                if (file == null)
+                {
+                    File.Delete(oldImagePath);
+
+                    result = _wwwRootDefault;
+
+                    return result;
+                }
+                else
+                {
+                    result = CreatePath(file);
+
+                    var sourcePath = Path.GetTempFileName();
+
+                    using (var stream = new FileStream(sourcePath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+
+                    File.Move(sourcePath, result);
+
+                    File.Delete(oldImagePath);
+
+                    return result;
+                }
+            }
+            catch (Exception exception)
+            {
+                return exception.Message;
+            }
+
+        }
 
     }
 }

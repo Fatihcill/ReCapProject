@@ -13,13 +13,12 @@ namespace WebAPI.Controllers
     [ApiController]
     public class CustomersController : ControllerBase
     {
-        ICustomerService _customerService;
+        private ICustomerService _customerService;
 
         public CustomersController(ICustomerService customerService)
         {
             _customerService = customerService;
         }
-
         [HttpGet("getall")]
         public IActionResult GetAll()
         {
@@ -28,67 +27,58 @@ namespace WebAPI.Controllers
             {
                 return Ok(result);
             }
+            else { return (IActionResult)BadRequest(result); }
 
-            return BadRequest(result);
         }
-        [HttpGet("getbyid")]
-        public IActionResult GetById(int id)
-        {
-            var result = _customerService.GetById(id);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
 
-            return BadRequest(result);
+        [HttpPost("addcustomer")]
+        public IActionResult AddCustomer(Customer customer)
+        {
+            var result = _customerService.Add(customer);
+            return result.Success ? (IActionResult)Ok(result) : BadRequest(result);
+        }
+        [HttpPut("updatecustomer")]
+        public IActionResult UpdateCustomer(Customer customer)
+        {
+            var result = _customerService.Update(customer);
+            return result.Success ? (IActionResult)Ok(result) : BadRequest(result);
+        }
+
+        [HttpPost("deletecustomer")]
+        public IActionResult DeleteCustomer(Customer customer)
+        {
+            var result = _customerService.Delete(customer);
+            return result.Success ? (IActionResult)Ok(result) : BadRequest(result);
         }
 
         [HttpGet("getcustomerdetails")]
         public IActionResult GetCustomerDetails()
         {
             var result = _customerService.GetCustomerDetails();
-
             if (result.Success)
             {
                 return Ok(result);
             }
-
-            return BadRequest(result);
+            else
+            {
+                return BadRequest(result);
+            }
         }
 
-
-        [HttpPost("add")]
-        public IActionResult Add(Customer customer)
+        [HttpGet("getcustomerdetailbyid")]
+        public IActionResult GetCustomerDetailById(int customerId)
         {
-            var result = _customerService.Add(customer);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest(result);
+            var result = _customerService.GetCustomerDetailById(customerId);
+            return result.Success ? (IActionResult)Ok(result) : BadRequest(result);
         }
-        [HttpPost("update")]
-        public IActionResult Update(Customer customer)
+
+        [HttpGet("getcustomerbyemail")]
+        public IActionResult GetCustomerByEmail(string email)
         {
-            var result = _customerService.Update(customer);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest(result);
+            var result = _customerService.GetCustomerByEmail(email);
+            return result.Success ? (IActionResult)Ok(result) : BadRequest(result);
         }
-        [HttpPost("delete")]
-        public IActionResult Delete(Customer customer)
-        {
-            var result = _customerService.Delete(customer);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
 
-            return BadRequest(result);
-        }
+
     }
 }

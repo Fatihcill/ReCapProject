@@ -7,6 +7,7 @@
         public static string CarUpdated = "Car Updated";
         public static string CarPriceInvalid = "Price must be greater than 0";
         public static string CarsListed = "Cars Listed";
+        public static string CarDescriptionInvalid = "Description should be longer than 2";
 
         public static string BrandAdded = "Brand Added";
         public static string BrandDeleted = "Brand Deleted";
@@ -17,7 +18,12 @@
         public static string ColorAdded = "Color Added";
         public static string ColorDeleted = "Color Deleted";
         public static string ColorUpdated = "Color Updated";
-        public static string ColorsListed = "Colors Listed";
+        public static string ColorsListed = "Colors Listed";        
+        
+        public static string CardAdded = "Card Added";
+        public static string CardDeleted = "Card Deleted";
+        public static string CardUpdated = "Card Updated";
+        public static string CardsListed = "Cards Listed";
 
         public static string CustomerAdded = "Customer Added";
         public static string CustomerDeleted = "Customer Deleted";
@@ -41,6 +47,7 @@
         public static string CarImageDeleted = "CarImage Deleted";
         public static string CarImageUpdated = "CarImage Updated";
         public static string CarImageLimitExceeded ="CarImage Limit Exceeded";
+        public static string CarImageNotFound ="CarImage Not Found";
 
 
 
@@ -52,5 +59,8 @@
         public static string UserAlreadyExists = "UserAlreadyExists";
         public static string AccessTokenCreated = "AccessTokenCreated";
         public static string AuthorizationDenied = "AuthorizationDenied";
+        public static string CarNotAvailable = "Car Not Available";
+        public static string FindexPointInvalid = "Your Findex point is 0";
+        public static string FindexPointLimitError = "Your Findex points are insufficient to rent this vehicle.";
     }
 }

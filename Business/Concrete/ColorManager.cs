@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using Business.Abstract;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
@@ -9,27 +11,41 @@ using Entities.Concrete;
 
 namespace Business.Concrete
 {
-    public class ColorManager:IColorService
+    public class ColorManager : IColorService
     {
-        IColorDal _colorDal;
+        private IColorDal _colorDal;
 
-        public ColorManager(IColorDal brandDal)
+        public ColorManager(IColorDal colorDal)
         {
-            _colorDal = brandDal;
+            _colorDal = colorDal;
         }
-
         [ValidationAspect(typeof(ColorValidator))]
         public IResult Add(Color color)
         {
-            _colorDal.Add(color);
+            if (color.ColorName.Length<2)
+            {
+                return new ErrorResult("Renk adı  En az 3 harfli olmalıdır.");
+            }
+            else
+            {
+                _colorDal.Add(color);
             return new SuccessResult(Messages.ColorAdded);
+                
+            }
+            
+        }
+        public IResult Update(Color color)
+        {
+            _colorDal.Update(color);
+            return new SuccessResult(Messages.ColorUpdated);
+
         }
 
         public IResult Delete(Color color)
         {
             _colorDal.Delete(color);
-
             return new SuccessResult(Messages.ColorDeleted);
+
         }
 
         public IDataResult<List<Color>> GetAll()
@@ -37,15 +53,10 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Color>>(_colorDal.GetAll(),Messages.ColorsListed);
         }
 
-        public IDataResult<Color> GetById(int id)
-        {
-            return new SuccessDataResult<Color>(_colorDal.Get(c => c.ColorId == id));
-        }
 
-        public IResult Update(Color entity)
+        public IDataResult<Color> GetById(int colorId)
         {
-            _colorDal.Update(entity);
-            return new SuccessResult(Messages.ColorUpdated);
+            return new SuccessDataResult<Color>(_colorDal.Get(p => p.ColorId == colorId),Messages.ColorsListed);
         }
     }
 }
