@@ -7,7 +7,7 @@ namespace Core.Utilities.FileHelper
 {
     public class FileHelper
     {
-        private static string _wwwRoot = Environment.CurrentDirectory + @"\wwwroot";
+        private static string _wwwRoot = Environment.CurrentDirectory + @"\wwwroot\Images\";
         public static string _wwwRootDefault = Environment.CurrentDirectory + @"\wwwroot\Images\default.png";
 
              public static string CreatePath(IFormFile file)
